@@ -25,7 +25,7 @@ def onpage():
                 error = report['error']
             else:
                 ai_suggestions = generate_seo_suggestions(report, url)
-
+                ai_suggestions['score'] = report['calculated_score']
     return render_template('onpage.html', report=report, ai_suggestions=ai_suggestions, url=url, error=error)
 @app.route('/technical', methods=['GET', 'POST'])
 def technical():
@@ -42,6 +42,7 @@ def technical():
                 error = report['error']
             else:
                 ai_suggestions = generate_technical_suggestions(report, url)
+                ai_suggestions['score'] = report['calculated_score']
 
     return render_template('technical.html', report=report, ai_suggestions=ai_suggestions, url=url, error=error)
 @app.route('/offpage', methods=['GET', 'POST'])
@@ -84,10 +85,12 @@ def full_report():
             onpage_report = scan_onpage_seo(url)
             if 'error' not in onpage_report:
                 onpage_ai = generate_seo_suggestions(onpage_report, url)
+                onpage_ai['score'] = onpage_report['calculated_score']
 
             technical_report = scan_technical_seo(url)
             if 'error' not in technical_report:
                 technical_ai = generate_technical_suggestions(technical_report, url)
+                technical_ai['score'] = technical_report['calculated_score']
 
             offpage_report = research_offpage_seo(url, niche_keyword)
             if 'error' not in offpage_report:

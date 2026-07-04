@@ -89,7 +89,37 @@ def scan_technical_seo(url):
             'status': 'Good' if len(broken_links) == 0 else f'{len(broken_links)} broken links found'
         }
 
+        results['calculated_score'] = calculate_technical_score(results)
         return results
 
     except Exception as e:
         return {'error': str(e)}
+    
+def calculate_technical_score(results):
+    score = 100
+
+    if results['load_time']['status'] == 'Average':
+        score -= 8
+    elif results['load_time']['status'] == 'Slow - Needs Optimization':
+        score -= 18
+
+    if not results['https']['enabled']:
+        score -= 20
+
+    if not results['mobile_viewport']['found']:
+        score -= 15
+
+    if not results['robots_txt']['found']:
+        score -= 8
+
+    if not results['sitemap']['found']:
+        score -= 10
+
+    if not results['canonical_tag']['found']:
+        score -= 8
+
+    if results['broken_links']['broken_count'] > 0:
+        penalty = min(results['broken_links']['broken_count'] * 3, 15)
+        score -= penalty
+
+    return max(score, 0)

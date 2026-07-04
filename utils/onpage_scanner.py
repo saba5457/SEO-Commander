@@ -66,7 +66,37 @@ def scan_onpage_seo(url):
             'external': len(external_links)
         }
 
+        results['calculated_score'] = calculate_onpage_score(results)
         return results
 
     except Exception as e:
         return {'error': str(e)}
+
+
+def calculate_onpage_score(results):
+    score = 100
+
+    if not results['title']['found']:
+        score -= 15
+    elif results['title']['status'] == 'Needs Improvement':
+        score -= 8
+
+    if not results['meta_description']['found']:
+        score -= 15
+    elif results['meta_description']['status'] == 'Needs Improvement':
+        score -= 8
+
+    if results['h1']['count'] != 1:
+        score -= 10
+
+    if results['images']['missing_alt_count'] > 0:
+        penalty = min(results['images']['missing_alt_count'] * 2, 15)
+        score -= penalty
+
+    if results['word_count']['count'] < 300:
+        score -= 10
+
+    if results['links']['internal'] == 0:
+        score -= 5
+
+    return max(score, 0)

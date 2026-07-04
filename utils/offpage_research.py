@@ -39,7 +39,26 @@ def research_offpage_seo(url, niche_keyword):
         results['competitors'] = competitors[:5]
         results['niche_keyword'] = niche_keyword
 
+        results['calculated_score'] = calculate_offpage_score(results)
         return results
 
     except Exception as e:
         return {'error': str(e)}
+    
+def calculate_offpage_score(results):
+    score = 40
+
+    if results.get('domain_age', {}).get('creation_date') != 'Unknown':
+        score += 15
+
+    guest_posts = len(results.get('guest_post_opportunities', []))
+    score += min(guest_posts * 8, 25)
+
+    directories = len(results.get('directory_opportunities', []))
+    score += min(directories * 6, 20)
+
+    competitors = len(results.get('competitors', []))
+    if competitors > 0:
+        score += 5
+
+    return min(score, 100)    

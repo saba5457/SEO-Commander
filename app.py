@@ -62,6 +62,7 @@ def offpage():
                 error = report['error']
             else:
                 ai_suggestions = generate_offpage_strategy(report, url, niche_keyword)
+                ai_suggestions['score'] = report['calculated_score']
 
     return render_template('offpage.html', report=report, ai_suggestions=ai_suggestions, url=url, niche_keyword=niche_keyword, error=error)
 @app.route('/full-report', methods=['GET', 'POST'])
@@ -95,6 +96,7 @@ def full_report():
             offpage_report = research_offpage_seo(url, niche_keyword)
             if 'error' not in offpage_report:
                 offpage_ai = generate_offpage_strategy(offpage_report, url, niche_keyword)
+                offpage_ai['score'] = offpage_report['calculated_score']
 
             scores = []
             if onpage_ai and 'score' in onpage_ai:

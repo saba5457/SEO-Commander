@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Technical SEO Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <h1 class="logo"><a href="/" style="color:white; text-decoration:none;">SEO <span>Commander</span></a></h1>
+    </nav>
+
+    <div class="hero">
+        <h2>Technical SEO Analysis</h2>
+        <p>Enter your website URL to check speed, mobile-friendliness, and crawlability.</p>
+    </div>
+
+    <form method="POST" class="url-form">
+        <input type="text" name="url" placeholder="https://example.com" value="{{ url or '' }}" required>
+        <button type="submit" class="btn">Scan Now</button>
+    </form>
+
+    {% if error %}
+        <div class="error-box">
+            <p>Error: {{ error }}</p>
+        </div>
+    {% endif %}
+
+    {% if report and not error %}
+    <div class="report-container">
+
+        <div class="report-card">
+            <h3>Page Load Time</h3>
+            <p><strong>Status:</strong> {{ report.load_time.status }}</p>
+            <p><strong>Time:</strong> {{ report.load_time.seconds }} seconds</p>
+        </div>
+
+        <div class="report-card">
+            <h3>HTTPS Security</h3>
+            <p><strong>Status:</strong> {{ report.https.status }}</p>
+        </div>
+
+        <div class="report-card">
+            <h3>Mobile Viewport</h3>
+            <p><strong>Status:</strong> {{ report.mobile_viewport.status }}</p>
+        </div>
+
+        <div class="report-card">
+            <h3>Robots.txt</h3>
+            <p><strong>Status:</strong> {{ report.robots_txt.status }}</p>
+        </div>
+
+        <div class="report-card">
+            <h3>Sitemap</h3>
+            <p><strong>Status:</strong> {{ report.sitemap.status }}</p>
+        </div>
+
+        <div class="report-card">
+            <h3>Canonical Tag</h3>
+            <p><strong>Status:</strong> {{ report.canonical_tag.status }}</p>
+        </div>
+
+        <div class="report-card">
+            <h3>Broken Links</h3>
+            <p><strong>Status:</strong> {{ report.broken_links.status }}</p>
+            <p><strong>Checked:</strong> {{ report.broken_links.checked }} links</p>
+        </div>
+
+    </div>
+
+    <div class="ai-report">
+        <h3>🤖 AI Technical SEO Report</h3>
+
+        <div class="score-section">
+            <div class="score-circle">
+                <span class="score-number">{{ ai_suggestions.score }}</span>
+                <span class="score-max">/100</span>
+            </div>
+            <p class="summary-text">{{ ai_suggestions.summary }}</p>
+        </div>
+
+        {% if ai_suggestions.strengths %}
+        <div class="strengths-section">
+            <h4>✅ What's Working Well</h4>
+            <ul>
+                {% for strength in ai_suggestions.strengths %}
+                <li>{{ strength }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="issues-section">
+            <h4>🛠️ Priority Fixes</h4>
+            {% for issue in ai_suggestions.issues %}
+            <div class="issue-card severity-{{ issue.severity|lower }}">
+                <div class="issue-header">
+                    <span class="issue-title">{{ issue.title }}</span>
+                    <span class="severity-badge">{{ issue.severity }}</span>
+                </div>
+                <p class="issue-why"><strong>Why it matters:</strong> {{ issue.why_it_matters }}</p>
+                <p class="issue-fix"><strong>How to fix:</strong> {{ issue.how_to_fix }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+    {% endif %}
+
+</body>
+</html>

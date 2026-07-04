@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Full SEO Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <h1 class="logo"><a href="/" style="color:white; text-decoration:none;">SEO <span>Commander</span></a></h1>
+    </nav>
+
+    <div class="hero">
+        <h2>Complete SEO Report</h2>
+        <p>Get a full On-Page, Technical, and Off-Page SEO analysis in one report.</p>
+    </div>
+
+    <form method="POST" class="url-form">
+        <input type="text" name="url" placeholder="https://example.com" value="{{ url or '' }}" required>
+        <input type="text" name="niche_keyword" placeholder="e.g. fitness coaching" value="{{ niche_keyword or '' }}" required>
+        <button type="submit" class="btn">Generate Full Report</button>
+    </form>
+
+    {% if overall_score is not none %}
+    <div class="report-container" style="max-width:900px;">
+        <div class="report-card" style="grid-column: 1 / -1; text-align:center;">
+            <h3>Overall SEO Health Score</h3>
+            <div class="score-circle" style="margin: 15px auto;">
+                <span class="score-number">{{ overall_score }}</span>
+                <span class="score-max">/100</span>
+            </div>
+            <p style="color:#b0b0c0;">Website: {{ url }} &nbsp;|&nbsp; Niche: {{ niche_keyword }}</p>
+        </div>
+    </div>
+
+    {% if onpage_ai %}
+    <div class="ai-report">
+        <h3>📄 On-Page SEO — Score: {{ onpage_ai.score }}/100</h3>
+        <p class="summary-text">{{ onpage_ai.summary }}</p>
+        <div class="issues-section">
+            {% for issue in onpage_ai.issues %}
+            <div class="issue-card severity-{{ issue.severity|lower }}">
+                <div class="issue-header">
+                    <span class="issue-title">{{ issue.title }}</span>
+                    <span class="severity-badge">{{ issue.severity }}</span>
+                </div>
+                <p class="issue-fix"><strong>Fix:</strong> {{ issue.how_to_fix }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if technical_ai %}
+    <div class="ai-report">
+        <h3>⚙️ Technical SEO — Score: {{ technical_ai.score }}/100</h3>
+        <p class="summary-text">{{ technical_ai.summary }}</p>
+        <div class="issues-section">
+            {% for issue in technical_ai.issues %}
+            <div class="issue-card severity-{{ issue.severity|lower }}">
+                <div class="issue-header">
+                    <span class="issue-title">{{ issue.title }}</span>
+                    <span class="severity-badge">{{ issue.severity }}</span>
+                </div>
+                <p class="issue-fix"><strong>Fix:</strong> {{ issue.how_to_fix }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if offpage_ai %}
+    <div class="ai-report">
+        <h3>🔗 Off-Page Strategy — Score: {{ offpage_ai.score }}/100</h3>
+        <p class="summary-text">{{ offpage_ai.summary }}</p>
+        <div class="issues-section">
+            {% for opp in offpage_ai.backlink_opportunities %}
+            <div class="issue-card severity-{{ opp.difficulty|lower }}">
+                <div class="issue-header">
+                    <span class="issue-title">{{ opp.type }}</span>
+                    <span class="severity-badge">{{ opp.difficulty }}</span>
+                </div>
+                <p class="issue-fix">{{ opp.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div style="text-align:center; padding: 20px 0 60px 0;">
+        <button onclick="window.print()" class="btn" style="border:none; cursor:pointer; font-size:15px; padding:14px 30px;">🖨️ Print / Save as PDF</button>
+    </div>
+
+    {% endif %}
+
+</body>
+</html>

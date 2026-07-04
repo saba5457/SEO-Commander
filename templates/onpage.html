@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>On-Page SEO Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <h1 class="logo"><a href="/" style="color:white; text-decoration:none;">SEO <span>Commander</span></a></h1>
+    </nav>
+
+    <div class="hero">
+        <h2>On-Page SEO Analysis</h2>
+        <p>Enter your website URL to get a full on-page SEO breakdown.</p>
+    </div>
+
+    <form method="POST" class="url-form">
+        <input type="text" name="url" placeholder="https://example.com" value="{{ url or '' }}" required>
+        <button type="submit" class="btn">Scan Now</button>
+    </form>
+
+    {% if error %}
+        <div class="error-box">
+            <p>Error: {{ error }}</p>
+        </div>
+    {% endif %}
+
+    {% if report and not error %}
+    <div class="report-container">
+
+        <div class="report-card">
+            <h3>Title Tag</h3>
+            <p><strong>Status:</strong> {{ report.title.status }}</p>
+            <p><strong>Text:</strong> {{ report.title.text }}</p>
+            <p><strong>Length:</strong> {{ report.title.length }} characters</p>
+        </div>
+
+        <div class="report-card">
+            <h3>Meta Description</h3>
+            <p><strong>Status:</strong> {{ report.meta_description.status }}</p>
+            <p><strong>Text:</strong> {{ report.meta_description.text }}</p>
+            <p><strong>Length:</strong> {{ report.meta_description.length }} characters</p>
+        </div>
+
+        <div class="report-card">
+            <h3>H1 Tags</h3>
+            <p><strong>Status:</strong> {{ report.h1.status }}</p>
+            <p><strong>Count:</strong> {{ report.h1.count }}</p>
+        </div>
+
+        <div class="report-card">
+            <h3>Images</h3>
+            <p><strong>Status:</strong> {{ report.images.status }}</p>
+            <p><strong>Total Images:</strong> {{ report.images.total }}</p>
+        </div>
+
+        <div class="report-card">
+            <h3>Word Count</h3>
+            <p><strong>Status:</strong> {{ report.word_count.status }}</p>
+            <p><strong>Count:</strong> {{ report.word_count.count }} words</p>
+        </div>
+
+        <div class="report-card">
+            <h3>Links</h3>
+            <p><strong>Internal Links:</strong> {{ report.links.internal }}</p>
+            <p><strong>External Links:</strong> {{ report.links.external }}</p>
+        </div>
+
+    </div>
+
+    <div class="ai-report">
+    <h3>🤖 AI SEO Consultant Report</h3>
+
+    <div class="score-section">
+        <div class="score-circle">
+            <span class="score-number">{{ ai_suggestions.score }}</span>
+            <span class="score-max">/100</span>
+        </div>
+        <p class="summary-text">{{ ai_suggestions.summary }}</p>
+    </div>
+
+    {% if ai_suggestions.strengths %}
+    <div class="strengths-section">
+        <h4>✅ What's Working Well</h4>
+        <ul>
+            {% for strength in ai_suggestions.strengths %}
+            <li>{{ strength }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="issues-section">
+        <h4>🛠️ Priority Fixes</h4>
+        {% for issue in ai_suggestions.issues %}
+        <div class="issue-card severity-{{ issue.severity|lower }}">
+            <div class="issue-header">
+                <span class="issue-title">{{ issue.title }}</span>
+                <span class="severity-badge">{{ issue.severity }}</span>
+            </div>
+            <p class="issue-why"><strong>Why it matters:</strong> {{ issue.why_it_matters }}</p>
+            <p class="issue-fix"><strong>How to fix:</strong> {{ issue.how_to_fix }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+    {% endif %}
+
+</body>
+</html>

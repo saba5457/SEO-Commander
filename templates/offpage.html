@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Off-Page SEO Strategy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <h1 class="logo"><a href="/" style="color:white; text-decoration:none;">SEO <span>Commander</span></a></h1>
+    </nav>
+
+    <div class="hero">
+        <h2>Off-Page SEO Strategy</h2>
+        <p>Enter your website URL and niche to get backlink opportunities and outreach tips.</p>
+    </div>
+
+    <form method="POST" class="url-form">
+        <input type="text" name="url" placeholder="https://example.com" value="{{ url or '' }}" required>
+        <input type="text" name="niche_keyword" placeholder="e.g. fitness coaching, digital marketing" value="{{ niche_keyword or '' }}" required>
+        <button type="submit" class="btn">Get Strategy</button>
+    </form>
+
+    {% if error %}
+        <div class="error-box">
+            <p>Error: {{ error }}</p>
+        </div>
+    {% endif %}
+
+    {% if ai_suggestions %}
+    <div class="ai-report">
+        <h3>🤖 AI Off-Page Strategy Report</h3>
+
+        <div class="score-section">
+            <div class="score-circle">
+                <span class="score-number">{{ ai_suggestions.score }}</span>
+                <span class="score-max">/100</span>
+            </div>
+            <p class="summary-text">{{ ai_suggestions.summary }}</p>
+        </div>
+
+        <div class="issues-section">
+            <h4>🔗 Backlink Opportunities</h4>
+            {% for opp in ai_suggestions.backlink_opportunities %}
+            <div class="issue-card severity-{{ opp.difficulty|lower }}">
+                <div class="issue-header">
+                    <span class="issue-title">{{ opp.type }}</span>
+                    <span class="severity-badge">{{ opp.difficulty }}</span>
+                </div>
+            {% if opp.site_url %}
+            <p class="issue-fix"><strong>Site:</strong> <a href="{{ opp.site_url }}" target="_blank" style="color:#00e0ff;">{{ opp.site_url }}</a></p>
+            {% endif %}
+            <p class="issue-why">{{ opp.description }}</p>
+        </div>
+        {% endfor %}
+        </div>
+
+        {% if ai_suggestions.outreach_tips %}
+        <div class="strengths-section">
+            <h4>📧 Outreach Tips</h4>
+            <ul>
+                {% for tip in ai_suggestions.outreach_tips %}
+                <li>{{ tip }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if ai_suggestions.competitor_insight %}
+        <div class="strengths-section">
+            <h4>🔍 Competitor Insight</h4>
+            <p class="summary-text">{{ ai_suggestions.competitor_insight }}</p>
+        </div>
+        {% endif %}
+
+    </div>
+    {% endif %}
+
+</body>
+</html>
